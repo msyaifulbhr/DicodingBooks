@@ -16,30 +16,24 @@ function main() {
     }
   };
 
-  const insertBook = (book) => {
-    // Membuat instance dari XMLHttpRequest
-    const xhr = new XMLHttpRequest();
+  const insertBook = async (book) => {
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': '12345'
+        },
+        body: JSON.stringify(book)
+      };
 
-    //menetapkan callback jika response sukses dan error
-    xhr.onload = function () {
-      const responseJson = JSON.parse(this.responseText);
+      const response = await fetch(`${baseUrl}/add`, options);
+      const responseJson = await response.json();
       showResponseMessage(responseJson.message);
       getBook();
-    };
-
-    xhr.onerror = function() {
-      showResponseMessage();
-    };
-
-    // Membuat POST request dan menetapkan target URL
-    xhr.open('POST', `${baseUrl}/add`);
-
-    // Mementapkan properti Content-Type dan X-Auth-Token pada Header request
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('X-Auth-Token', '12345');
-
-    // Mengirimkan request dan menyisipkan JSON.stringify(book) pada body
-    xhr.send(JSON.stringify(book));
+    } catch (error) {
+      showResponseMessage(error);
+    }
   };
 
   const updateBook = (book) => {
