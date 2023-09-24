@@ -1,4 +1,5 @@
 function main() {
+  const baseUrl = 'https://books-api.dicoding.dev';
 
   const getBook = () => {
     // Membuat instance dari XMLHttpRequest
@@ -20,27 +21,19 @@ function main() {
     };
 
     // Membuat GET request dan menetapkan target URL
-    xhr.open('GET', 'https://books-api.dicoding.dev/list');
+    xhr.open('GET', `${baseUrl}/list`);
 
     // Mengirimkan request
     xhr.send();
-
-    const responseJson = JSON.parse(this.responseText);
-
-    if (responseJson.error) {
-      showResponseMessage(responseJson.message);
-    } else {
-      renderAllBooks(responseJson.books);
-    }
   };
 
 
   const insertBook = (book) => {
     // Membuat instance dari XMLHttpRequest
-    const xhr =new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
 
     //menetapkan callback jika response sukses dan error
-    xhr.onload = function() {
+    xhr.onload = function () {
       const responseJson = JSON.parse(this.responseText);
       showResponseMessage(responseJson.message);
       getBook();
@@ -51,7 +44,7 @@ function main() {
     };
 
     // Membuat POST request dan menetapkan target URL
-    xhr.open('POST', 'https://books-api.dicoding.dev/add');
+    xhr.open('POST', `${baseUrl}/add`);
 
     // Mementapkan properti Content-Type dan X-Auth-Token pada Header request
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -62,7 +55,29 @@ function main() {
   };
 
   const updateBook = (book) => {
-    // tuliskan kode di sini!
+    // Membuat instance dari XMLHttpRequest
+    const xhr = new XMLHttpRequest();
+
+    //menetapkan callback jika response sukses dan error
+    xhr.onload = function () {
+      const responseJson = JSON.parse(this.responseText);
+      showResponseMessage(responseJson.message);
+      getBook();
+    };
+
+    xhr.onerror = function() {
+      showResponseMessage();
+    };
+
+    // Membuat POST request dan menetapkan target URL
+    xhr.open('PUT', `${baseUrl}/edit/${book.id}`);
+
+    // Mementapkan properti Content-Type dan X-Auth-Token pada Header request
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-Auth-Token', '12345');
+
+    // Mengirimkan request dan menyisipkan JSON.stringify(book) pada body
+    xhr.send(JSON.stringify(book));
   };
 
   const removeBook = (bookId) => {
